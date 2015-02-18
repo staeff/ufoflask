@@ -1,5 +1,8 @@
 # Geolocation App
 
+Following this article:  
+http://tech.pro/tutorial/1213/how-to-build-an-api-with-python-and-flask
+
 ## First step
 
 * configure db-uri in config.py and read it into routes.py with
@@ -19,4 +22,16 @@
 
 * write the Model in routes.py
 * create requirements.txt
-* Update README 
+* Update README
+
+## Fourth Step
+
+* write views  
+  * all sightings: <server>/sightings
+  * all sightings with limit and offset param: <server>/sightings/?limit=3&offset=30.
+  * single sighting: <server>/sightings/1
+
+## Fifth Step
+
+* implement nearby search following this:
+https://developers.google.com/maps/articles/phpsqlsearch_v3#findnearsql

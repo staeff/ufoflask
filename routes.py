@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
-class Sightings(db.Model):
+class Sighting(db.Model):
     __tablename__ = 'sightings'
     id = db.Column(db.Integer, primary_key = True)
     sighted_at = db.Column(db.Integer)
@@ -20,8 +20,19 @@ class Sightings(db.Model):
 @app.route('/sightings/', methods=['GET'])
 def sightings():
     if request.method == 'GET':
-        # SQLAlchemy equivalent to SELECT * from sightings LIMIT 10 OFFSET 0;
-        results = Sightings.query.limit(10).offset(0).all()
+        lim = request.args.get('limit', 10)
+        off = request.args.get('offset', 0)
+
+        radius = request.args.get('radius', 10)
+        location = request.args.get('location', ',')
+        lat, lon = location.split(',')
+
+        if lat and lon and radius:
+            query = "SELECT id,  location, ( 3959 * acos( cos( radians( %(latitude)s ) ) * cos( radians( lat ) ) * cos( radians( lon ) - radians( %(longitude)s ) ) + sin( radians( %(latitude)s ) ) * sin( radians( lat ) ) ) ) AS distance FROM sightings HAVING distance < %(radius)s ORDER BY distance LIMIT %(limit)s" % {"latitude": lat, "longitude": lon, "radius": radius, "limit": lim}
+            results = Sighting.query.from_statement(query).all()
+        else:
+            # SQLAlchemy equivalent to SELECT * from sightings LIMIT 10 OFFSET 0;
+            results = Sighting.query.limit(lim).offset(off).all()
 
         json_results = []
         for result in results:
@@ -36,6 +47,23 @@ def sightings():
             json_results.append(d)
 
         return jsonify(items=json_results)
+
+@app.route('/sightings/<int:sighting_id>', methods=['GET'])
+def sighting(sighting_id):
+    if request.method == 'GET':
+        result = Sighting.query.filter_by(id=sighting_id).first()
+
+        json_result = {'sighted_at': result.sighted_at,
+                   'reported_at': result.reported_at,
+                   'location': result.location,
+                   'shape': result.shape,
+                   'duration': result.duration,
+                   'description': result.description,
+                   'lat': result.lat,
+                   'lon': result.lon}
+
+
+        return jsonify(items=json_result)
 
 if __name__ == '__main__':
   app.run(debug=True)
