@@ -54,3 +54,10 @@ https://developers.google.com/maps/articles/phpsqlsearch_v3#findnearsql
 * location search by name
 * sightings longer, short or equal a certain time period
 * use date as parameter (sightings since ... to ..., etc.)
+
+## Secrets from the environment
+
+Article about that:  
+http://opensourcehacker.com/2012/12/13/configuring-your-python-application-using-environment-variables/
+
+DBUSER={username} PW={password} python routes.py
