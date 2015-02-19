@@ -61,3 +61,8 @@ Article about that:
 http://opensourcehacker.com/2012/12/13/configuring-your-python-application-using-environment-variables/
 
 DBUSER={username} PW={password} python routes.py
+
+## Conclusion
+
+May its not neccessary to implement the REST-behaviour. Just take a package:
+https://flask-restless.readthedocs.org/en/latest/
