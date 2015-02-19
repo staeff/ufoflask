@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -16,6 +16,10 @@ class Sighting(db.Model):
     description = db.Column(db.Text)
     lat = db.Column(db.Float(6))
     lon = db.Column(db.Float(6))
+
+@app.route('/')
+def index_page():
+    return render_template('index.html')
 
 @app.route('/sightings/', methods=['GET'])
 def sightings():
@@ -66,4 +70,4 @@ def sighting(sighting_id):
         return jsonify(items=json_result)
 
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run(debug=True, host='0.0.0.0')

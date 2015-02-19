@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <h1>Sightings-API</h1>
+    <p>
+      http://tech.pro/tutorial/1213/how-to-build-an-api-with-python-and-flask
+    </p>
+    <p>
+    A RESTful API build with Python and Flask.
+    </p>
+    <h3>Available endpoints and options</h3>
+    <ul>
+      <li><a href="{{ request.url }}sightings">{{ request.url }}sightings</a></li>
+      <li><a href="{{ request.url }}sightings/?limit=3&offset=30">
+        {{ request.url }}sightings/?limit=3&offset=30</a>
+      </li>
+      <li><a href="{{ request.url }}sightings/42">
+        {{ request.url }}sightings/42
+      </a>
+      </li>
+      <li><a href="{{ request.url }}sightings/?location=37.7749295,-122.4194155&radius=25&limit=3">
+        {{ request.url }}sightings/?location=37.7749295,-122.4194155&radius=25&limit=3
+      </a>
+    </li>
+    </ul>
+  </body>
+</html>
