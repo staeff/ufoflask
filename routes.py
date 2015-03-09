@@ -8,9 +8,10 @@ db = SQLAlchemy(app)
 class Sighting(db.Model):
     __tablename__ = 'sightings'
     id = db.Column(db.Integer, primary_key = True)
-    sighted_at = db.Column(db.Integer)
-    reported_at = db.Column(db.Integer)
-    location = db.Column(db.String(100))
+    sighted_at = db.Column(db.Date)
+    reported_at = db.Column(db.Date)
+    location_city = db.Column(db.String(100))
+    location_state = db.Column(db.String(100))
     shape = db.Column(db.String(10))
     duration = db.Column(db.String(10))
     description = db.Column(db.Text)
@@ -32,7 +33,7 @@ def sightings():
         lat, lon = location.split(',')
 
         if lat and lon and radius:
-            query = "SELECT id,  location, ( 3959 * acos( cos( radians( %(latitude)s ) ) * cos( radians( lat ) ) * cos( radians( lon ) - radians( %(longitude)s ) ) + sin( radians( %(latitude)s ) ) * sin( radians( lat ) ) ) ) AS distance FROM sightings HAVING distance < %(radius)s ORDER BY distance LIMIT %(limit)s" % {"latitude": lat, "longitude": lon, "radius": radius, "limit": lim}
+            query = "SELECT id,  location_city, ( 3959 * acos( cos( radians( %(latitude)s ) ) * cos( radians( lat ) ) * cos( radians( lon ) - radians( %(longitude)s ) ) + sin( radians( %(latitude)s ) ) * sin( radians( lat ) ) ) ) AS distance FROM sightings HAVING distance < %(radius)s ORDER BY distance LIMIT %(limit)s" % {"latitude": lat, "longitude": lon, "radius": radius, "limit": lim}
             results = Sighting.query.from_statement(query).all()
         else:
             # SQLAlchemy equivalent to SELECT * from sightings LIMIT 10 OFFSET 0;
@@ -40,9 +41,10 @@ def sightings():
 
         json_results = []
         for result in results:
-            d = {'sighted_at': result.sighted_at,
-                 'reported_at': result.reported_at,
-                 'location': result.location,
+            d = {'sighted_at': result.sighted_at.strftime('%Y-%m-%d'),
+                 'reported_at': result.reported_at.strftime('%Y-%m-%d'),
+                 'city': result.location_city,
+                 'state': result.location_state,
                  'shape': result.shape,
                  'duration': result.duration,
                  'description': result.description,
@@ -57,9 +59,10 @@ def sighting(sighting_id):
     if request.method == 'GET':
         result = Sighting.query.filter_by(id=sighting_id).first()
 
-        json_result = {'sighted_at': result.sighted_at,
-                   'reported_at': result.reported_at,
-                   'location': result.location,
+        json_result = {'sighted_at': result.sighted_at.strftime('%Y-%m-%d'),
+                   'reported_at': result.reported_at.strftime('%Y-%m-%d'),
+                   'city': result.location_city,
+                   'state': result.location_state,
                    'shape': result.shape,
                    'duration': result.duration,
                    'description': result.description,
